@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS db_django;
+CREATE USER 'ivan'@'localhost' IDENTIFIED BY '1111';
+GRANT ALL ON db_django.* TO 'ivan'@'localhost'
