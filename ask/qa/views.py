@@ -8,7 +8,7 @@ def test(request,*args,**kwargs):
     return HttpResponse('OK')
 
 def news(request):
-    qa=Question.objects.new()
+    qa=Question.objects.all().order_by('-id')
     limit=10
     page = request.GET.get('page')
     p=Paginator(qa,limit)
@@ -20,10 +20,10 @@ def news(request):
     except EmptyPage:
         contacts = p.page(p.num_pages)
 
-    return render(request,"index.html",{"question":qa,"page":contacts,"paginator":p})
+    return render(request,"index.html",{"page":contacts,"paginator":p})
 
 def popular(request):
-    qa = Question.objetcs.popular()
+    qa = Question.objects.popular()
     limit = 10
     page = request.GET.get('page')
     p=Paginator(qa,limit)
@@ -34,9 +34,9 @@ def popular(request):
         contacts = p.page(1)
     except EmptyPage:
         contacts = p.page(p.num_pages)
-    return render(request,"index.html",{"question":qa,"page":contacts,"paginator":p})
+    return render(request,"index.html",{"page":contacts,"paginator":p})
 
 def question(request,pk):
     qa = get_object_or_404(Question,id=pk)
-    ans= qa.anwer_set.all()
+    ans= Answer.objects.filter(question_id__exact=int(id))
     return render(request,'question.html',{'question':qa,'answer':ans})
