@@ -16,6 +16,8 @@ class Question(models.Model):
     rating = models.IntegerField()
     author = models.ForeignKey(User)
     likes = models.ManyToManyField(User,related_name='question_like_user')
+    def get_url(self):
+        return '/question/' + str(self.id)
 
 class Answer(models.Model):
     text = models.TextField()
