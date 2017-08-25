@@ -39,11 +39,12 @@ def popular(request):
 
 def question(request,pk):
     if request.method == 'POST':
-        return answer(request)
+        return Answer(request)
     else:
         qa = get_object_or_404(Question,id=pk)
+        form = AnswerForm()
         ans= qa.answer_set.all()
-    return render(request,'question.html',{'question':qa,'answer':ans})
+    return render(request,'question.html',{'question':qa,'answer':ans,'form':form})
 
 def Ask(request):
     if request.method == 'POST':
@@ -61,7 +62,7 @@ def Answer(request):
         form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save()
-            url = answer.question.get_url()
+            url = answer.get_url()
             return HttpResponseRedirect(url)
     else:
         form = AnswerForm()

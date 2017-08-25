@@ -9,8 +9,11 @@
     <div>
     {{ question.text }} 
     </div>
-    {% csrf_token %}
-    {% include "answer.html" %}
+    <form method="post" enctype="application/x-www-form-urlencoded">
+      {% csrf_token %}
+      {{ form }}
+      <button>Отправить</button>
+    </form>
     {% for ans in answer %}
     <div>
      <p>
