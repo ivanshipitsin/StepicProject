@@ -9,6 +9,8 @@
     <div>
     {{ question.text }} 
     </div>
+    {% csrf_token %}
+    {% include "answer.html" %}
     {% for ans in answer %}
     <div>
      <p>
