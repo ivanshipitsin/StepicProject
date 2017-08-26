@@ -3,7 +3,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404
 from .models import Question, Answer
 from django.core.exceptions import ObjectDoesNotExist
-from .forms import AskForm, AnswerForm
+from .forms import AskForm, AnswerForm, RegisterForm, LoginForm
+from django.contrib import auth
 
 def test(request,*args,**kwargs):
     return HttpResponse('OK')
@@ -50,6 +51,7 @@ def Ask(request):
     if request.method == 'POST':
         form = AskForm(request.POST)
         if form.is_valid():
+            form._user = request.user
             post = form.save()
             url=post.get_url()
             return HttpResponseRedirect(url)
@@ -61,9 +63,32 @@ def Answer(request):
     if request.method == 'POST':
         form = AnswerForm(request.POST)
         if form.is_valid():
+            form._user = request.user
             answer = form.save()
-            url = answer.get_url()
+            url = answer.question.get_url()
             return HttpResponseRedirect(url)
     else:
         form = AnswerForm()
     return render(request,'answer.html',{'form':form})
+
+def SignUp(request):
+    if request.method == 'POST' :
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth.login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = RegisterForm();
+    return render(request,'signup.html',{'form':form})
+
+def Login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth.login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = LoginForm()
+    return render(request,'login.html',{'form':form})
